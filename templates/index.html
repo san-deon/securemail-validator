@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureMail Validator</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        body {
+            background: radial-gradient(circle at 10% 20%, rgba(26, 60, 64, 0.95) 0%, rgba(10, 20, 22, 1) 90.1%);
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            color: #e6f1f2;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 900px;
+        }
+
+        .card {
+            background: rgba(18, 38, 42, 0.65);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            margin-top: 30px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            box-shadow: 0 30px 60px -10px rgba(0, 0, 0, 0.6), 0 0 40px rgba(0, 180, 157, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #00b49d 0%, #00d2ff 100%);
+            color: #060b0d;
+            border-radius: 24px 24px 0 0 !important;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            padding: 30px 24px !important;
+        }
+
+        .card-header h2 {
+            font-weight: 700;
+            font-size: 1.8rem;
+            margin-bottom: 6px;
+            letter-spacing: -0.5px;
+        }
+
+        .card-header p {
+            font-weight: 500;
+            opacity: 0.85;
+            margin: 0;
+            font-size: 0.95rem;
+        }
+
+        .card-body {
+            padding: 35px 30px !important;
+        }
+
+        .card-footer {
+            background: rgba(0, 0, 0, 0.2) !important;
+            border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+            padding: 24px 30px !important;
+        }
+
+        .form-control-lg {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1.5px solid rgba(255, 255, 255, 0.12);
+            border-radius: 14px;
+            color: #060b0d !important;
+            font-size: 1.05rem;
+            padding: 14px 18px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .form-control-lg::placeholder {
+            color: rgba(255, 255, 255, 0.35);
+        }
+
+        .form-control-lg:focus {
+            background: rgba(255, 255, 255, 0.07);
+            border-color: #00d2ff;
+            box-shadow: 0 0 0 4px rgba(0, 210, 255, 0.15);
+            outline: none;
+            color: #ffffff;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #00b49d 0%, #00d2ff 100%);
+            border: none;
+            color: #060b0d;
+            font-weight: 600;
+            border-radius: 14px;
+            padding: 14px 20px;
+            box-shadow: 0 4px 15px rgba(0, 180, 157, 0.25);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #00cbb1 0%, #33ddff 100%);
+            color: #060b0d;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 210, 255, 0.4);
+        }
+
+        .btn-primary:active {
+            transform: translateY(1px);
+        }
+
+        .btn-outline-primary {
+            border: 1.5px solid #00d2ff;
+            color: #00d2ff;
+            background: transparent;
+            font-weight: 600;
+            border-radius: 14px;
+            padding: 12px 20px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline-primary:hover {
+            background: rgba(0, 210, 255, 0.08);
+            color: #33ddff;
+            border-color: #33ddff;
+            transform: translateY(-1px);
+        }
+
+        .btn-outline-primary:active {
+            transform: translateY(1px);
+        }
+
+        .alert {
+            border-radius: 14px;
+            border: 1.5px solid transparent;
+            padding: 16px 20px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            margin-bottom: 20px;
+        }
+
+        .alert-success {
+            background-color: rgba(40, 167, 69, 0.12);
+            border-color: rgba(40, 167, 69, 0.25);
+            color: #7efcb6;
+        }
+
+        .alert-warning {
+            background-color: rgba(255, 193, 7, 0.12);
+            border-color: rgba(255, 193, 7, 0.25);
+            color: #ffde6a;
+        }
+
+        .alert-danger {
+            background-color: rgba(220, 53, 69, 0.12);
+            border-color: rgba(220, 53, 69, 0.25);
+            color: #ff9b9b;
+        }
+
+        .alert-info {
+            background-color: rgba(0, 180, 255, 0.1);
+            border-color: rgba(0, 180, 255, 0.25);
+            color: #9de4ff;
+        }
+
+        #offline-banner {
+            display: none;
+        }
+
+        #history {
+            background: rgba(18, 38, 42, 0.4) !important;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 18px;
+            padding: 20px !important;
+            backdrop-filter: blur(15px);
+            max-height: 350px;
+            overflow-y: auto;
+        }
+
+        .history-item {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+            color: #e6f1f2;
+            transition: background-color 0.2s ease;
+            padding: 12px 10px !important;
+        }
+
+        .history-item:last-child {
+            border-bottom: none !important;
+        }
+
+        .history-item:hover {
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+
+        .history-item strong {
+            font-weight: 500;
+            color: #ffffff;
+            font-size: 0.95rem;
+        }
+
+        .history-item .text-muted {
+            color: rgba(255, 255, 255, 0.45) !important;
+            font-size: 0.8rem;
+        }
+
+        .badge {
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge.bg-success {
+            background: linear-gradient(135deg, #11998e, #38ef7d) !important;
+            color: #0c2016;
+            font-weight: 700;
+        }
+
+        .badge.bg-warning {
+            background: linear-gradient(135deg, #f2994a, #f2c94c) !important;
+            color: #201305;
+            font-weight: 700;
+        }
+
+        .badge.bg-danger {
+            background: linear-gradient(135deg, #ff416c, #ff4b2b) !important;
+            color: #ffffff;
+            font-weight: 700;
+        }
+
+        .btn-outline-light {
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.05);
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 500;
+            border-radius: 10px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-outline-light:hover {
+            background: rgba(255, 255, 255, 0.12);
+            color: #ffffff;
+            border-color: rgba(255, 255, 255, 0.35);
+        }
+
+        /* Scrollbar styles for history */
+        #history::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        #history::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        #history::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        #history::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container py-5">
+
+        <!-- Internet Warning Banner -->
+        <div id="offline-banner" class="alert alert-danger text-center mb-4">
+            <i class="fas fa-wifi-slash"></i>
+            <strong>You are currently offline.</strong><br>
+            <small>Full email validation (domain check) requires an internet connection.
+                Only basic format and disposable checks will work.</small>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <h2><i class="fas fa-shield-alt"></i> SecureMail Validator</h2>
+                        <p>Advanced Email Security Tool</p>
+                    </div>
+                    <div class="card-body p-4">
+                        <form id="emailForm">
+                            <div class="mb-3">
+                                <input type="email" class="form-control form-control-lg" id="email"
+                                    placeholder="user@example.com" required autocomplete="off">
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-lg w-100" id="validateBtn">
+                                <i class="fas fa-check-circle"></i> Validate Email
+                            </button>
+                        </form>
+
+                        <div id="result" class="mt-4"></div>
+                    </div>
+                    <div class="card-footer">
+                        <button class="btn btn-outline-primary w-100" onclick="downloadReport()">
+                            <i class="fas fa-download"></i> Download Report
+                        </button>
+                    </div>
+                </div>
+
+                <!-- History -->
+                <div class="mt-4">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h5 class="text-white mb-0">
+                            <i class="fas fa-history"></i> Recent Checks
+                        </h5>
+                        <button class="btn btn-sm btn-outline-light" onclick="clearHistory()">
+                            <i class="fas fa-trash"></i> Clear All
+                        </button>
+                    </div>
+                    <div id="history" class="bg-white rounded p-3"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentResult = null;
+
+        // Check internet connection
+        function updateConnectionStatus() {
+            const offlineBanner = document.getElementById('offline-banner');
+            const validateBtn = document.getElementById('validateBtn');
+
+            if (!navigator.onLine) {
+                offlineBanner.style.display = 'block';
+                validateBtn.style.opacity = '0.7';
+                validateBtn.title = "Internet required for full validation";
+            } else {
+                offlineBanner.style.display = 'none';
+                validateBtn.style.opacity = '1';
+                validateBtn.title = "";
+            }
+        }
+
+        // Initial check
+        window.addEventListener('load', () => {
+            updateConnectionStatus();
+            loadHistory();
+        });
+
+        // Listen for connection changes
+        window.addEventListener('online', updateConnectionStatus);
+        window.addEventListener('offline', updateConnectionStatus);
+
+        document.getElementById('emailForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const emailInput = document.getElementById('email').value.trim();
+            const resultDiv = document.getElementById('result');
+
+            if (!navigator.onLine) {
+                resultDiv.innerHTML = `
+                    <div class="alert alert-warning">
+                        <i class="fas fa-wifi-slash"></i> You are offline.<br>
+                        <small>Only basic checks are available. Connect to the internet for full domain validation.</small>
+                    </div>`;
+                return;
+            }
+
+            resultDiv.innerHTML = `<div class="alert alert-info"><i class="fas fa-spinner fa-spin"></i> Validating...</div>`;
+
+            try {
+                const formData = new FormData();
+                formData.append('email', emailInput);
+
+                const response = await fetch('/validate', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                currentResult = await response.json();
+
+                let html = '';
+
+                if (currentResult.status === "valid") {
+                    html = `<div class="alert alert-success"><i class="fas fa-check-circle"></i> ${currentResult.message}</div>`;
+                }
+                else if (currentResult.status === "warning") {
+                    html = `<div class="alert alert-warning"><i class="fas fa-exclamation-triangle"></i> ${currentResult.message}</div>`;
+                }
+                else if (currentResult.status === "typo" && currentResult.suggestion) {
+                    html = `
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle"></i> ${currentResult.message}
+                            <button class="btn btn-sm btn-dark ms-2" onclick="useSuggestion()">Use Suggestion</button>
+                        </div>`;
+                }
+                else {
+                    html = `<div class="alert alert-danger"><i class="fas fa-times-circle"></i> ${currentResult.message}</div>`;
+                }
+
+                resultDiv.innerHTML = html;
+                loadHistory();
+            } catch (err) {
+                resultDiv.innerHTML = `<div class="alert alert-danger">Error connecting to server. Check your internet connection.</div>`;
+            }
+        });
+
+        function useSuggestion() {
+            if (currentResult && currentResult.suggestion) {
+                document.getElementById('email').value = currentResult.suggestion;
+                document.getElementById('emailForm').dispatchEvent(new Event('submit'));
+            }
+        }
+
+        function downloadReport() {
+            if (!currentResult) {
+                alert("Please validate an email first!");
+                return;
+            }
+            let report = `SecureMail Validator Report\n`;
+            report += `Generated: ${new Date().toLocaleString()}\n\n`;
+            report += `Email: ${currentResult.email}\n`;
+            report += `Status: ${currentResult.status.toUpperCase()}\n`;
+            report += `Message: ${currentResult.message.replace(/<[^>]+>/g, '')}\n`;
+            if (currentResult.suggestion) report += `Suggestion: ${currentResult.suggestion}\n`;
+
+            const blob = new Blob([report], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `email-report-${currentResult.email || 'unknown'}.txt`;
+            a.click();
+        }
+
+        function loadHistory() {
+            fetch('/history')
+                .then(res => res.json())
+                .then(data => {
+                    let html = '';
+                    data.reverse().forEach(item => {
+                        let badgeClass = 'danger';
+                        if (item.status === 'valid') badgeClass = 'success';
+                        else if (item.status === 'warning' || item.status === 'typo') badgeClass = 'warning';
+
+                        html += `
+                            <div class="history-item border-bottom py-2 d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>${item.email}</strong><br>
+                                    <small class="text-muted">${item.timestamp}</small>
+                                </div>
+                                <span class="badge bg-${badgeClass}">${item.status}</span>
+                            </div>`;
+                    });
+                    document.getElementById('history').innerHTML = html || '<p class="text-muted">No checks yet</p>';
+                })
+                .catch(() => {
+                    document.getElementById('history').innerHTML = '<p class="text-muted">Could not load history</p>';
+                });
+        }
+
+        function clearHistory() {
+            if (confirm("Are you sure you want to clear all recent checks?")) {
+                fetch('/clear_history', { method: 'POST' })
+                    .then(res => res.json())
+                    .then(data => {
+                        alert(data.message);
+                        loadHistory();
+                    })
+                    .catch(() => alert("Failed to clear history"));
+            }
+        }
+
+        // Load history on page load
+        window.onload = loadHistory;
+    </script>
+</body>
+
+</html>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureMail Validator</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        body {
+            background: radial-gradient(circle at 10% 20%, rgba(26, 60, 64, 0.95) 0%, rgba(10, 20, 22, 1) 90.1%);
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            color: #e6f1f2;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 900px;
+        }
+
+        .card {
+            background: rgba(18, 38, 42, 0.65);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            margin-top: 30px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            box-shadow: 0 30px 60px -10px rgba(0, 0, 0, 0.6), 0 0 40px rgba(0, 180, 157, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #00b49d 0%, #00d2ff 100%);
+            color: #060b0d;
+            border-radius: 24px 24px 0 0 !important;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            padding: 30px 24px !important;
+        }
+
+        .card-header h2 {
+            font-weight: 700;
+            font-size: 1.8rem;
+            margin-bottom: 6px;
+            letter-spacing: -0.5px;
+        }
+
+        .card-header p {
+            font-weight: 500;
+            opacity: 0.85;
+            margin: 0;
+            font-size: 0.95rem;
+        }
+
+        .card-body {
+            padding: 35px 30px !important;
+        }
+
+        .card-footer {
+            background: rgba(0, 0, 0, 0.2) !important;
+            border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+            padding: 24px 30px !important;
+        }
+
+        .form-control-lg {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1.5px solid rgba(255, 255, 255, 0.12);
+        }
