@@ -196,8 +196,36 @@ def clear_history():
     conn.close()
     return jsonify({"status": "success", "message": "✅ All history cleared successfully"})
 
+# ====================== OLD SERVER-SIDE HISTORY ROUTES ======================
+# These are no longer needed because we now use browser localStorage for privacy.
+# Kept commented in case we need to restore server-side history later.
+
+# @app.route('/history')
+# def get_history():
+#     conn = sqlite3.connect(DB_PATH)
+#     conn.row_factory = sqlite3.Row
+#     cursor = conn.cursor()
+#     cursor.execute("SELECT * FROM validations ORDER BY id DESC LIMIT 20")
+#     rows = cursor.fetchall()
+#     conn.close()
+#     return jsonify([dict(row) for row in rows])
+
+
+# @app.route('/clear_history', methods=['POST'])
+# def clear_history():
+#     conn = sqlite3.connect(DB_PATH)
+#     conn.execute("DELETE FROM validations")
+#     conn.commit()
+#     conn.close()
+#     return jsonify({"status": "success", "message": "✅ All history cleared successfully"})
+
+# ===========================================================================
+
 if __name__ == '__main__':
     print("🚀 SecureMail Validator Started!")
     print("🌐 Open → http://127.0.0.1:5000")
     print("💾 History is now saved persistently")
     app.run(debug=True, host='127.0.0.1', port=5000)
+else:
+    # For production (Gunicorn on Render)
+    print("🚀 Running in production mode")

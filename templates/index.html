@@ -332,6 +332,58 @@
     <script>
         let currentResult = null;
 
+        // ==================== BROWSER-ONLY HISTORY (localStorage) ====================
+        function saveToHistory(email, status, message) {
+            let history = JSON.parse(localStorage.getItem('emailHistory') || '[]');
+
+            history.unshift({
+                email: email,
+                status: status,
+                message: message,
+                timestamp: new Date().toLocaleString()
+            });
+
+            // Keep only last 20 entries
+            history = history.slice(0, 20);
+            localStorage.setItem('emailHistory', JSON.stringify(history));
+            loadHistory();
+        }
+
+        function loadHistory() {
+            const historyDiv = document.getElementById('history');
+            let history = JSON.parse(localStorage.getItem('emailHistory') || '[]');
+
+            if (history.length === 0) {
+                historyDiv.innerHTML = '<p class="text-muted">No checks yet</p>';
+                return;
+            }
+
+            let html = '';
+            history.forEach(item => {
+                let badgeClass = 'danger';
+                if (item.status === 'valid') badgeClass = 'success';
+                else if (item.status === 'warning' || item.status === 'typo') badgeClass = 'warning';
+
+                html += `
+                    <div class="history-item border-bottom py-2 d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>${item.email}</strong><br>
+                            <small class="text-muted">${item.timestamp}</small>
+                        </div>
+                        <span class="badge bg-${badgeClass}">${item.status}</span>
+                    </div>`;
+            });
+            historyDiv.innerHTML = html;
+        }
+
+        function clearHistory() {
+            if (confirm("Are you sure you want to clear all recent checks?")) {
+                localStorage.removeItem('emailHistory');
+                loadHistory();
+            }
+        }
+        // =====================================================================
+
         // Check internet connection
         function updateConnectionStatus() {
             const offlineBanner = document.getElementById('offline-banner');
@@ -405,7 +457,11 @@
                 }
 
                 resultDiv.innerHTML = html;
+
+                // Save to browser localStorage (private per user)
+                saveToHistory(emailInput, currentResult.status, currentResult.message);
                 loadHistory();
+
             } catch (err) {
                 resultDiv.innerHTML = `<div class="alert alert-danger">Error connecting to server. Check your internet connection.</div>`;
             }
@@ -439,45 +495,40 @@
         }
 
         function loadHistory() {
-            fetch('/history')
-                .then(res => res.json())
-                .then(data => {
-                    let html = '';
-                    data.reverse().forEach(item => {
-                        let badgeClass = 'danger';
-                        if (item.status === 'valid') badgeClass = 'success';
-                        else if (item.status === 'warning' || item.status === 'typo') badgeClass = 'warning';
+            const historyDiv = document.getElementById('history');
+            let history = JSON.parse(localStorage.getItem('emailHistory') || '[]');
 
-                        html += `
-                            <div class="history-item border-bottom py-2 d-flex justify-content-between align-items-center">
-                                <div>
-                                    <strong>${item.email}</strong><br>
-                                    <small class="text-muted">${item.timestamp}</small>
-                                </div>
-                                <span class="badge bg-${badgeClass}">${item.status}</span>
-                            </div>`;
-                    });
-                    document.getElementById('history').innerHTML = html || '<p class="text-muted">No checks yet</p>';
-                })
-                .catch(() => {
-                    document.getElementById('history').innerHTML = '<p class="text-muted">Could not load history</p>';
-                });
+            if (history.length === 0) {
+                historyDiv.innerHTML = '<p class="text-muted text-center py-3">No checks yet</p>';
+                return;
+            }
+
+            let html = '';
+            history.forEach(item => {
+                let badgeClass = 'danger';
+                if (item.status === 'valid') badgeClass = 'success';
+                else if (item.status === 'warning' || item.status === 'typo') badgeClass = 'warning';
+
+                html += `
+            <div class="history-item border-bottom py-2 d-flex justify-content-between align-items-center">
+                <div>
+                    <strong>${item.email}</strong><br>
+                    <small class="text-muted">${item.timestamp}</small>
+                </div>
+                <span class="badge bg-${badgeClass}">${item.status}</span>
+            </div>`;
+            });
+            historyDiv.innerHTML = html;
         }
 
         function clearHistory() {
-            if (confirm("Are you sure you want to clear all recent checks?")) {
-                fetch('/clear_history', { method: 'POST' })
-                    .then(res => res.json())
-                    .then(data => {
-                        alert(data.message);
-                        loadHistory();
-                    })
-                    .catch(() => alert("Failed to clear history"));
+            if (confirm("Clear all your recent checks?")) {
+                localStorage.removeItem('emailHistory');
+                loadHistory();
             }
         }
 
-        // Load history on page load
-        window.onload = loadHistory;
+
     </script>
 </body>
 
